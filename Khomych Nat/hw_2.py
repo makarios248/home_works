@@ -92,21 +92,23 @@ print(the_best_student)
 # 9. Подсчитать средний бал по каждому классу
 # (результат округлить до 2 знаков после запятой);
 
-class_a_avg_mark = round(
-    (class_a_student1_avg_mark + class_a_student2_avg_mark) / 2, 2)
+class_a_avg_mark = list(sample_dict['class_a']['student1']['marks'].values())
+class_a_avg_mark.extend(list(
+    sample_dict['class_a']['student2']['marks'].values()))
+total_class_a_avg = round(sum(class_a_avg_mark) / len(class_a_avg_mark), 2)
+print(total_class_a_avg)
 
-class_b_avg_mark = round(
-    (class_b_student1_avg_mark + class_b_student2_avg_mark) / 2, 2)
-
-print(class_a_avg_mark)
-print(class_b_avg_mark)
-
+class_b_avg_mark = list(sample_dict['class_b']['student1']['marks'].values())
+class_b_avg_mark.extend(list(
+    sample_dict['class_b']['student2']['marks'].values()))
+total_class_b_avg = round(sum(class_b_avg_mark) / len(class_b_avg_mark), 2)
+print(total_class_b_avg)
 
 # 10. Создать словарь со средним баллом за классы;
 
 class_avg_marks = {
-    'class_a': class_a_avg_mark,
-    'class_b': class_b_avg_mark,
+    'class_a': total_class_a_avg,
+    'class_b': total_class_b_avg,
 }
 print(class_avg_marks)
 
