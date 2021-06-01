@@ -18,60 +18,75 @@
 import random
 import datetime
 
-with open('users.txt', 'r') as data:
+with open('users.txt', 'a+') as data,\
+     open('loggin.txt', 'a+') as f_log:
+    data.seek(0)
     store = {}
     for i in data.readlines():
         key, val = i.strip().split(':')
         store[key] = val
 # создаем словарь с логинами и паролями из файла 'users.txt'
+# открываем файл для логирования событий регистрации и входа.
 
-user_account = input('Hello! Do you have an account?(yes/no) ')
-# спрашиваем, есть ли у пользователя аккаунт на нашем ресурсе
+    user_account = input('Hello! Do you have an account?(yes/no) ').lower()
+    # спрашиваем, есть ли у пользователя аккаунт на нашем ресурсе
 
-if user_account == 'yes':
     while True:
-        user = input('Your user name: ')
-        password = input('Your password: ')
-        key = False
-        if not (user in store and store[user] == password):
-            print('Your username or password didn\'t match. '
-                  'Please try again.')
+        if user_account not in ('yes', 'no'):
+            user_account = input('Retry. Type only yes or no: ').lower()
             continue
-        if user in store and store[user] == password:
-            print(f'Welcome, {user}!')
-            with open('loggin.txt', 'a') as f_log:
-                # добавить событие в логфайл
-                f_log.write(f'User {user} was authenticated '
-                            f'successfully at {datetime.datetime.now()}\n')
-
+        else:
             break
-else:
-    invite_to_join = input('Do you want to create an account?(yes/no) ')
-    # у пользоватлеля нет аккаунта, хочет ли он зарегистрироватся?
+    # правильно ли пользователь ввел ответ (да/нет)
 
-    if invite_to_join == 'yes':
+    if user_account == 'yes':
         while True:
-            new_user = input('Create Username: ')
-            new_password = input('Create Password: ')
-            key = False
-            if new_user in store:
-                print('That user has already exist. Try again')
+            user = input('Your user name: ')
+            password = input('Your password: ')
+            if not (user in store and store[user] == password):
+                print('Your username or password didn\'t match. '
+                      'Please try again.')
                 continue
-            if new_user not in store:
-                add_user = {new_user: new_password}
-                store.update(add_user)
-                with open('users.txt', 'a') as f_users:
-                    f_users.writelines(
-                        '{}:{}\n'.format(k, v) for k, v in add_user.items())
-                print(f'Welcome, {new_user}!')
-                with open('loggin.txt', 'a') as f_log:
-                    # добавить событие в логфайл
+            if user in store and store[user] == password:
+                print(f'Welcome, {user}!')
+                f_log.write(f'User {user} was authenticated successfully '
+                            f'at {datetime.datetime.now()}\n')
+                # добавить событие в логфайл
+                break
+
+    else:
+        invite_to_join = input('Do you want to create an account?'
+                               '(yes/no) ').lower()
+        # у пользоватлеля нет аккаунта, хочет ли он зарегистрироватся?
+
+        while True:
+            if invite_to_join not in ('yes', 'no'):
+                invite_to_join = input('Retry. Type only yes or no: ').lower()
+                continue
+            else:
+                break
+        # правильно ли пользователь ввел ответ (да/нет)
+
+        if invite_to_join == 'yes':
+            while True:
+                new_user = input('Create Username: ')
+                new_password = input('Create Password: ')
+                if new_user in store:
+                    print('That user has already exist. Try again')
+                    continue
+                if new_user not in store:
+                    add_user = {new_user: new_password}
+                    store.update(add_user)
+                    data.writelines('{}:{}\n'.format(k, v)
+                                    for k, v in add_user.items())
+                    print(f'Welcome, {new_user}!')
                     f_log.write(f'User {new_user} created an account '
                                 f'at {datetime.datetime.now()}\n')
-                break
-    else:
-        print('See you around :)')
-        # у пользователя нет аккаунта и не хочет регистрироваться
+                    # добавить событие в логфайл
+                    break
+        else:
+            print('See you around :)')
+            # у пользователя нет аккаунта и не хочет регистрироваться
 
 # LABS
 # *************************ЗАДАЧА №6******************************
@@ -146,7 +161,6 @@ with open('whitelist.txt', 'r', encoding='utf-8') as f_white,\
 
 cities = ['Kiev', 'Odessa', 'Lviv', 'Chernihiv', 'Kharkiv']
 city_temperature = {el: random.sample(range(20, 50), 7) for el in cities}
-print(city_temperature)
 
 cities2 = ['Kiev', 'Odessa', 'Lviv', 'Chernihiv', 'Kharkiv']
 city_temp = {}
