@@ -11,12 +11,11 @@
 def program_mode_selection():
     """ Выбор пользователем режима программы - текст нужно
         зашифровать ("e") или расшифровать ("d") """
-    program_mode = input('Do you want to encrypt (type "e") '
-                         'or decrypt (type "d")? ').lower()
     while True:
+        program_mode = input('Do you want to encrypt (type "e") '
+                             'or decrypt (type "d")? ').lower()
         if program_mode not in ('e', 'd'):
-            program_mode = input('Please, write "e" to encrypt '
-                                 'and "d" to decrypt: ').lower()
+            print('Please, use only "e" or "d"')
         elif program_mode == 'e':
             return 'e'
         else:
@@ -56,9 +55,9 @@ def is_valid_file_name():
         где сохранить итоговый текст """
     while True:
         source_file = input('Please, name the source file: ')
-        if isinstance(source_file, str) is True:
+        if isinstance(source_file, str):
             result_file = input('How to name a new file: ')
-            if isinstance(result_file, str) is True:
+            if isinstance(result_file, str):
                 return source_file, result_file
             else:
                 print('Not valid name')
@@ -91,8 +90,9 @@ def caesar_cipher(file_in, file_out, key, alphabet):
             else:
                 result += i
         with open(file_out, 'a+', encoding='utf-8') as to_save:
+            to_save.write(''.join(result))
             print(f'Text successfully encoded and saved to {file_out}')
-            return to_save.write(''.join(result))
+            return None
 
 
 def main_menu():  # запуск программы
